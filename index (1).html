@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mínimos Matemáticos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0e0e10;
+      --surface: #18181c;
+      --border: #2a2a30;
+      --accent: #c8f060;
+      --accent2: #60c8f0;
+      --text: #e8e8e2;
+      --muted: #888882;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    header {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 4rem;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    header::before {
+      content: 'min';
+      font-family: var(--serif);
+      font-size: 40vw;
+      font-weight: 700;
+      color: var(--surface);
+      position: absolute;
+      right: -4vw;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp .6s ease forwards .1s;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 700;
+      line-height: 1.05;
+      max-width: 800px;
+      opacity: 0;
+      animation: fadeUp .7s ease forwards .25s;
+    }
+
+    h1 em {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .hero-sub {
+      max-width: 480px;
+      color: var(--muted);
+      margin-top: 2rem;
+      font-weight: 300;
+      font-size: 1.05rem;
+      opacity: 0;
+      animation: fadeUp .7s ease forwards .4s;
+    }
+
+    .hero-formula {
+      margin-top: 3rem;
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      color: var(--accent2);
+      border-left: 2px solid var(--accent2);
+      padding-left: 1.25rem;
+      opacity: 0;
+      animation: fadeUp .7s ease forwards .55s;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 3rem;
+    }
+
+    /* ── SECTION TITLES ── */
+    .section-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: .15em;
+      display: block;
+      margin-bottom: .5rem;
+    }
+
+    h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: 1.1rem;
+      color: var(--text);
+      margin: 2rem 0 .75rem;
+    }
+
+    p { color: var(--muted); margin-bottom: 1rem; font-weight: 300; }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 5rem 0;
+      border-bottom: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── GRID ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 640px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      header { padding: 4rem 1.5rem; }
+      main { padding: 3rem 1.5rem; }
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: border-color .25s, transform .25s;
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .card-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent2);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+    }
+
+    .card h3 { margin: 0 0 .5rem; font-size: 1.05rem; }
+    .card p { font-size: .9rem; margin: 0; }
+
+    /* ── FORMULA BOX ── */
+    .formula-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 1.5rem 1.75rem;
+      margin: 2rem 0;
+      font-family: var(--mono);
+      font-size: 1rem;
+      color: var(--accent2);
+      overflow-x: auto;
+    }
+
+    /* ── STEPS ── */
+    .steps { counter-reset: step; margin-top: 2rem; }
+
+    .step {
+      display: flex;
+      gap: 1.5rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+
+    .step:last-child { border-bottom: none; }
+
+    .step-num {
+      counter-increment: step;
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    .step-num::before { content: counter(step, decimal-leading-zero); }
+
+    /* ── COMPARISON TABLE ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+      font-size: .9rem;
+    }
+
+    th {
+      text-align: left;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .12em;
+      color: var(--muted);
+      padding: .75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: .85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    td:first-child { color: var(--text); font-weight: 500; }
+
+    tr:hover td { background: var(--surface); }
+
+    /* ── HIGHLIGHT ── */
+    .highlight { color: var(--accent); font-family: var(--mono); }
+    .highlight2 { color: var(--accent2); font-family: var(--mono); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="hero-tag">Cálculo diferencial — Optimización</span>
+  <h1>El <em>mínimo</em><br>matemático</h1>
+  <p class="hero-sub">Fundamentos, condiciones y métodos para encontrar el valor más pequeño que puede alcanzar una función.</p>
+  <div class="hero-formula">f′(x₀) = 0 &nbsp;∧&nbsp; f″(x₀) &gt; 0 &nbsp;⟹&nbsp; mínimo local en x₀</div>
+</header>
+
+<main>
+
+  <!-- 1. Concepto -->
+  <section>
+    <span class="section-num">01 — Concepto</span>
+    <h2>¿Qué es un mínimo?</h2>
+    <p>Un mínimo es el punto donde una función alcanza su valor más bajo, ya sea dentro de un intervalo específico (local) o en todo su dominio (global).</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <span class="card-label">Tipo A</span>
+        <h3>Mínimo local</h3>
+        <p>f(x₀) ≤ f(x) para todo x en algún entorno de x₀. La función es la más baja en esa vecindad, pero puede haber valores menores en otro lugar.</p>
+      </div>
+      <div class="card">
+        <span class="card-label">Tipo B</span>
+        <h3>Mínimo global (absoluto)</h3>
+        <p>f(x₀) ≤ f(x) para todo x en el dominio. Es el valor mínimo de toda la función, sin excepción.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Condiciones -->
+  <section>
+    <span class="section-num">02 — Condiciones</span>
+    <h2>Cómo identificarlo</h2>
+    <p>Para determinar si un punto crítico es un mínimo, se aplican las condiciones de primer y segundo orden.</p>
+
+    <div class="formula-box">
+      Condición necesaria (1°):&nbsp; f′(x₀) = 0<br>
+      Condición suficiente (2°):&nbsp; f″(x₀) &gt; 0
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>f″(x₀)</th>
+          <th>Clasificación</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>&gt; 0</td><td>Mínimo local</td><td>La función es cóncava hacia arriba en x₀</td></tr>
+        <tr><td>&lt; 0</td><td>Máximo local</td><td>La función es cóncava hacia abajo en x₀</td></tr>
+        <tr><td>= 0</td><td>Indeterminado</td><td>Se requiere análisis de orden superior</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 3. Procedimiento -->
+  <section>
+    <span class="section-num">03 — Método</span>
+    <h2>Paso a paso</h2>
+    <p>Para encontrar los mínimos de una función diferenciable <span class="highlight">f(x)</span>:</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div>
+          <h3>Calcular la primera derivada</h3>
+          <p>Obtener <span class="highlight2">f′(x)</span>. Esta describe la pendiente de la función en cada punto.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div>
+          <h3>Igualar a cero</h3>
+          <p>Resolver <span class="highlight2">f′(x) = 0</span> para encontrar los puntos críticos x₀.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div>
+          <h3>Calcular la segunda derivada</h3>
+          <p>Obtener <span class="highlight2">f″(x)</span> y evaluarla en cada punto crítico.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div>
+          <h3>Clasificar los puntos</h3>
+          <p>Si <span class="highlight">f″(x₀) &gt; 0</span>, el punto es un mínimo local. Comparar todos los mínimos para identificar el global.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Varias variables -->
+  <section>
+    <span class="section-num">04 — Varias variables</span>
+    <h2>Funciones de varias variables</h2>
+    <p>Para <span class="highlight">f(x, y)</span>, el criterio se extiende usando el gradiente y la matriz Hessiana.</p>
+
+    <div class="formula-box">
+      ∇f(x₀, y₀) = 0 &nbsp;⟹&nbsp; punto crítico<br><br>
+      H = | f_xx &nbsp; f_xy |<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;| f_yx &nbsp; f_yy |<br><br>
+      det(H) &gt; 0 ∧ f_xx &gt; 0 &nbsp;⟹&nbsp; mínimo local
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <span class="card-label">Caso 1</span>
+        <h3>det(H) &gt; 0, f_xx &gt; 0</h3>
+        <p>Mínimo local. La superficie es cóncava hacia arriba en el punto crítico.</p>
+      </div>
+      <div class="card">
+        <span class="card-label">Caso 2</span>
+        <h3>det(H) &lt; 0</h3>
+        <p>Punto de silla. No es mínimo ni máximo; la función sube en una dirección y baja en otra.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Lagrange -->
+  <section>
+    <span class="section-num">05 — Restricciones</span>
+    <h2>Multiplicadores de Lagrange</h2>
+    <p>Cuando se debe minimizar <span class="highlight">f(x, y)</span> sujeto a una restricción <span class="highlight2">g(x, y) = 0</span>, se usa el método de Lagrange.</p>
+
+    <div class="formula-box">
+      Minimizar f(x, y) &nbsp; sujeto a &nbsp; g(x, y) = 0<br><br>
+      Condición: &nbsp; ∇f = λ · ∇g<br>
+      ⟹ resolver el sistema con la restricción
+    </div>
+
+    <p>Este método es fundamental en economía, ingeniería y machine learning, donde los recursos o parámetros tienen límites.</p>
+  </section>
+
+</main>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('section').forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
